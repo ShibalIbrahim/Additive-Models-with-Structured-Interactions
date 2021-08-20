@@ -20,18 +20,18 @@ import time
 from tqdm import notebook
 import warnings
 
-from SparseAMsWithInteractions.src.GAMsL0 import utilities
-from SparseAMsWithInteractions.src.GAMsL0 import CrossValidation
-from SparseAMsWithInteractions.src.GAMsL0 import L0Path
-from SparseAMsWithInteractions.src.GAMsL0 import CoordinateDescent
+from SparseAMsWithInteractions.src.AMsL0 import utilities
+from SparseAMsWithInteractions.src.AMsL0 import CrossValidation
+from SparseAMsWithInteractions.src.AMsL0 import L0Path
+from SparseAMsWithInteractions.src.AMsL0 import CoordinateDescent
 from SparseAMsWithInteractions.src import utils
 
 os.environ['QT_QPA_PLATFORM']='offscreen'
 font = {'weight' : 'bold',
         'size'   : 14}
 
-class GAM(object):
-    """GAMs with b-splines under L0 sparsity.
+class AM(object):
+    """AMs with b-splines under L0 sparsity.
     
     Attributes:
         lams_sm: Regularization path over smoothness penalty for spline bases, float numpy 1D array. 
