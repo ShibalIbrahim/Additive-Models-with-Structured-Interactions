@@ -46,9 +46,9 @@ For a tutorial, please refer to [Sparse Additive Models with Interactions](https
 cd SparseGAMsWithInteractions
 
 The following 3 ipython notebooks can be used to run block cyclic coordinate descent algorithm for the three models
-For `GAM`: run src/GAMsL0/GAMsL0.ipynb [no interactions]
-For `GAMI`: run src/GAMsWithInteractionsL0/GAMsWithInteractionsL0.ipynb
-For `GAMISH`: run src/GAMsWithInteractionsStrongHierarchy/GAMsWithInteractionsStrongHierarchy.ipynb
+For `AM`: run src/AMsL0/AMsL0.ipynb [no interactions]
+For `AMI`: run src/AMsWithInteractionsL0/AMsWithInteractionsL0.ipynb
+For `AMISH`: run src/AMsWithInteractionsStrongHierarchy/AMsWithInteractionsStrongHierarchy.ipynb
 ```
 
 ## Citing Additive-Models-with-Structured-Interactions
