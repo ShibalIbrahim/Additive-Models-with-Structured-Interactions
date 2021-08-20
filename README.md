@@ -54,11 +54,12 @@ For `GAMISH`: run src/GAMsWithInteractionsStrongHierarchy/GAMsWithInteractionsSt
 ## Citing Additive-Models-with-Structured-Interactions
 If you find our repository useful in your research, please consider citing the following paper.
 
+```
 @misc{Ibrahim2021,
   title={Interpretable-Models-To-Identify-Low-Response-Populations-In-Census-Bureau-Surveys},
   author={Ibrahim, Shibal and Mazumder, Rahul and Radchenki, Peter and Ben-David, Emanuel},
   Eprint={arXiv:},
   year={2021}
 }
-
+```
 
