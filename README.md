@@ -2,7 +2,7 @@
 
 This is our implementation of Additive Models with interactions under L0 subset selection with/without strong hierarchy and evaluation on Census Surveys Response prediction as described in our manuscript.
 
-"Predicting Census Survey Response Rates via Interpretable Nonparametric Additive Models with Structured Interactions" (https://arxiv.org/3891614) by Shibal Ibrahim, Rahul Mazumder, Peter Radchenko, Emanuel Ben-David
+[Predicting Census Survey Response Rates via Interpretable Nonparametric Additive Models with Structured Interactions] (https://arxiv.org/3891614) by Shibal Ibrahim, Rahul Mazumder, Peter Radchenko, Emanuel Ben-David
 
 ## Installation
 We provide a conda environment file named "jasa.yml" for straightforward installation with Anaconda, which can be used to setup a jasa environment with the commands:
