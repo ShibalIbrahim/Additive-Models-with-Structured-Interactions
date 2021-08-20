@@ -8,7 +8,7 @@ from scipy.special import comb
 from sklearn.metrics import mean_squared_error
 from tqdm import tnrange, tqdm_notebook
 
-from SparseGAMsWithInteractions.src.GAMsL0.utilities import solve
+from SparseAMsWithInteractions.src.AMsL0.utilities import solve
 
 def CD_Separate_ActiveSet(Ypred=None,
                           B=None,

@@ -8,7 +8,7 @@ from sklearn.metrics import mean_squared_error
 from tqdm import notebook
 import warnings
 
-from SparseGAMsWithInteractions.src.GAMsWithInteractionsL0 import utilities
+from SparseAMsWithInteractions.src.AMsWithInteractionsL0 import utilities
 
 def CD_Joint_ActiveSet(Ypred = None,
                        beta = None,

@@ -18,23 +18,23 @@ import time
 from tqdm import notebook
 import warnings
 
-from SparseGAMsWithInteractions.src.GAMsWithInteractionsL0 import utilities
-from SparseGAMsWithInteractions.src.GAMsWithInteractionsL0 import CrossValidation
-from SparseGAMsWithInteractions.src.GAMsWithInteractionsL0 import L0Path
-from SparseGAMsWithInteractions.src.GAMsWithInteractionsL0 import optimizer
+from SparseAMsWithInteractions.src.AMsWithInteractionsL0 import utilities
+from SparseAMsWithInteractions.src.AMsWithInteractionsL0 import CrossValidation
+from SparseAMsWithInteractions.src.AMsWithInteractionsL0 import L0Path
+from SparseAMsWithInteractions.src.AMsWithInteractionsL0 import optimizer
 
-from SparseGAMsWithInteractions.src.GAMsWithInteractionsStrongHierarchy import CrossValidation_HS
-from SparseGAMsWithInteractions.src.GAMsWithInteractionsStrongHierarchy import L0Path_HS
-from SparseGAMsWithInteractions.src.GAMsWithInteractionsStrongHierarchy import HierarchicalSparsity
-from SparseGAMsWithInteractions.src.GAMsWithInteractionsStrongHierarchy import ThresholdingPath_HS
-from SparseGAMsWithInteractions.src import utils
+from SparseAMsWithInteractions.src.AMsWithInteractionsStrongHierarchy import CrossValidation_HS
+from SparseAMsWithInteractions.src.AMsWithInteractionsStrongHierarchy import L0Path_HS
+from SparseAMsWithInteractions.src.AMsWithInteractionsStrongHierarchy import HierarchicalSparsity
+from SparseAMsWithInteractions.src.AMsWithInteractionsStrongHierarchy import ThresholdingPath_HS
+from SparseAMsWithInteractions.src import utils
 
 os.environ['QT_QPA_PLATFORM']='offscreen'
 font = {'weight' : 'bold',
         'size'   : 14}
 
-class GAMISH(object):
-    """GAM with interactions under strong hierarchy (GAMISH) with b-splines under L0 sparsity.
+class AMISH(object):
+    """AM with interactions under strong hierarchy (AMISH) with b-splines under L0 sparsity.
     
     Attributes:
         lams_sm: Regularization path over smoothness penalty for spline bases, float numpy 1D array. 
@@ -281,7 +281,7 @@ class GAMISH(object):
             Ytest: test responses, numpy array of shape (Ntest, ).        
         """
         
-        pen = np.array(['GAMsWithInteractionsStrongHierarchy-opt','GAMsWithInteractionsStrongHierarchy-sp'])
+        pen = np.array(['AMsWithInteractionsStrongHierarchy-opt','AMsWithInteractionsStrongHierarchy-sp'])
         M = pen.shape[0]
         df = pd.DataFrame(data={'': pen,
                                 'Training {}'.format(self.eval_criteria): np.zeros(M), 
@@ -327,21 +327,21 @@ class GAMISH(object):
         print('Sparse: Test-MSE: {:.6f}, Test-RMSE: {:.6f}, Test-MAE: {:.6f}, Standard-Error: {:.6f}'.format(test_mse_sp, test_rmse_sp, test_mae_sp, std_err_sp))    
         
         hp_opt = {'lam_sm': self.lam_sm_opt, 'lam_L0': self.lam_L0_opt}
-        df.loc['GAMsWithInteractionsStrongHierarchy-opt', 'Training {}'.format(self.eval_criteria)] = train_eval_opt
-        df.loc['GAMsWithInteractionsStrongHierarchy-opt', 'Validation {}'.format(self.eval_criteria)] = val_eval_opt
-        df.loc['GAMsWithInteractionsStrongHierarchy-opt', 'Test {}'.format(self.eval_criteria)] = test_eval_opt
-        df.loc['GAMsWithInteractionsStrongHierarchy-opt', 'Test MSE'], df.loc['GAMsWithInteractionsStrongHierarchy-opt', 'Test RMSE'], df.loc['GAMsWithInteractionsStrongHierarchy-opt', 'Test MAE'], df.loc['GAMsWithInteractionsStrongHierarchy-opt','Standard Error'] = (test_mse_opt, test_rmse_opt, test_mae_opt, std_err_opt)
-        df.loc['GAMsWithInteractionsStrongHierarchy-opt', 'Nonzeros']=len(np.union1d(self.active_set_opt, np.unique(np.array(self.interaction_terms)[self.active_interaction_set_opt])))
-        df.loc['GAMsWithInteractionsStrongHierarchy-opt', 'Optimal Hyperparameters'] = ', '.join([f'{key}: {value}' for key, value in hp_opt.items()])
+        df.loc['AMsWithInteractionsStrongHierarchy-opt', 'Training {}'.format(self.eval_criteria)] = train_eval_opt
+        df.loc['AMsWithInteractionsStrongHierarchy-opt', 'Validation {}'.format(self.eval_criteria)] = val_eval_opt
+        df.loc['AMsWithInteractionsStrongHierarchy-opt', 'Test {}'.format(self.eval_criteria)] = test_eval_opt
+        df.loc['AMsWithInteractionsStrongHierarchy-opt', 'Test MSE'], df.loc['AMsWithInteractionsStrongHierarchy-opt', 'Test RMSE'], df.loc['AMsWithInteractionsStrongHierarchy-opt', 'Test MAE'], df.loc['AMsWithInteractionsStrongHierarchy-opt','Standard Error'] = (test_mse_opt, test_rmse_opt, test_mae_opt, std_err_opt)
+        df.loc['AMsWithInteractionsStrongHierarchy-opt', 'Nonzeros']=len(np.union1d(self.active_set_opt, np.unique(np.array(self.interaction_terms)[self.active_interaction_set_opt])))
+        df.loc['AMsWithInteractionsStrongHierarchy-opt', 'Optimal Hyperparameters'] = ', '.join([f'{key}: {value}' for key, value in hp_opt.items()])
         hp_sp = {'lam_sm': self.lam_sm_sp, 'lam_L0': self.lam_L0_sp}
-        df.loc['GAMsWithInteractionsStrongHierarchy-sp', 'Training {}'.format(self.eval_criteria)] = train_eval_sp
-        df.loc['GAMsWithInteractionsStrongHierarchy-sp', 'Validation {}'.format(self.eval_criteria)] = val_eval_sp
-        df.loc['GAMsWithInteractionsStrongHierarchy-sp', 'Test {}'.format(self.eval_criteria)] = test_eval_sp
-        df.loc['GAMsWithInteractionsStrongHierarchy-sp', 'Test MSE'], df.loc['GAMsWithInteractionsStrongHierarchy-sp', 'Test RMSE'], df.loc['GAMsWithInteractionsStrongHierarchy-sp', 'Test MAE'], df.loc['GAMsWithInteractionsStrongHierarchy-sp','Standard Error'] = (test_mse_sp, test_rmse_sp, test_mae_sp, std_err_sp)
-        df.loc['GAMsWithInteractionsStrongHierarchy-sp', 'Nonzeros']=len(np.union1d(self.active_set_sp, np.unique(np.array(self.interaction_terms)[self.active_interaction_set_sp])))
-        df.loc['GAMsWithInteractionsStrongHierarchy-sp', 'Optimal Hyperparameters'] = ', '.join([f'{key}: {value}' for key, value in hp_sp.items()])
+        df.loc['AMsWithInteractionsStrongHierarchy-sp', 'Training {}'.format(self.eval_criteria)] = train_eval_sp
+        df.loc['AMsWithInteractionsStrongHierarchy-sp', 'Validation {}'.format(self.eval_criteria)] = val_eval_sp
+        df.loc['AMsWithInteractionsStrongHierarchy-sp', 'Test {}'.format(self.eval_criteria)] = test_eval_sp
+        df.loc['AMsWithInteractionsStrongHierarchy-sp', 'Test MSE'], df.loc['AMsWithInteractionsStrongHierarchy-sp', 'Test RMSE'], df.loc['AMsWithInteractionsStrongHierarchy-sp', 'Test MAE'], df.loc['AMsWithInteractionsStrongHierarchy-sp','Standard Error'] = (test_mse_sp, test_rmse_sp, test_mae_sp, std_err_sp)
+        df.loc['AMsWithInteractionsStrongHierarchy-sp', 'Nonzeros']=len(np.union1d(self.active_set_sp, np.unique(np.array(self.interaction_terms)[self.active_interaction_set_sp])))
+        df.loc['AMsWithInteractionsStrongHierarchy-sp', 'Optimal Hyperparameters'] = ', '.join([f'{key}: {value}' for key, value in hp_sp.items()])
         display(df)
-        with open(os.path.join(self.path, 'GAMsWithInteractionsStrongHierarchy.csv'), 'a') as f:
+        with open(os.path.join(self.path, 'AMsWithInteractionsStrongHierarchy.csv'), 'a') as f:
             df.to_csv(f, header=True, sep='\t', encoding='utf-8', index=True)
             
     def visualize_partial_dependences(self, X, Y, use_sparse_solution=False, saveflag=False):

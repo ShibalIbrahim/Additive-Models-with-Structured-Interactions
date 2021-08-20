@@ -19,18 +19,18 @@ import time
 from tqdm import notebook
 import warnings
 
-from SparseGAMsWithInteractions.src.GAMsWithInteractionsL0 import utilities
-from SparseGAMsWithInteractions.src.GAMsWithInteractionsL0 import CrossValidation
-from SparseGAMsWithInteractions.src.GAMsWithInteractionsL0 import L0Path
-from SparseGAMsWithInteractions.src.GAMsWithInteractionsL0 import optimizer
-from SparseGAMsWithInteractions.src import utils
+from SparseAMsWithInteractions.src.AMsWithInteractionsL0 import utilities
+from SparseAMsWithInteractions.src.AMsWithInteractionsL0 import CrossValidation
+from SparseAMsWithInteractions.src.AMsWithInteractionsL0 import L0Path
+from SparseAMsWithInteractions.src.AMsWithInteractionsL0 import optimizer
+from SparseAMsWithInteractions.src import utils
 
 os.environ['QT_QPA_PLATFORM']='offscreen'
 font = {'weight' : 'bold',
         'size'   : 14}
 
-class GAMI(object):
-    """GAM with interactions (GAMI) with b-splines under L0 sparsity.
+class AMI(object):
+    """AM with interactions (AMI) with b-splines under L0 sparsity.
     
     Attributes:
         lams_sm: Regularization path over smoothness penalty for spline bases, float numpy 1D array. 
@@ -286,7 +286,7 @@ class GAMI(object):
             Ytest: test responses, numpy array of shape (Ntest, ).        
         """
         
-        pen = np.array(['GAMsWithInteractionsL0-opt','GAMsWithInteractionsL0-sp'])
+        pen = np.array(['AMsWithInteractionsL0-opt','AMsWithInteractionsL0-sp'])
         M = pen.shape[0]
         df = pd.DataFrame(data={'': pen,
                                 'Training {}'.format(self.eval_criteria): np.zeros(M), 
@@ -332,21 +332,21 @@ class GAMI(object):
         print('Sparse: Test-MSE: {:.6f}, Test-RMSE: {:.6f}, Test-MAE: {:.6f}, Standard-Error: {:.6f}'.format(test_mse_sp, test_rmse_sp, test_mae_sp, std_err_sp))    
         
         hp_opt = {'lam_sm': self.lam_sm_opt, 'lam_L0': self.lam_L0_opt}
-        df.loc['GAMsWithInteractionsL0-opt', 'Training {}'.format(self.eval_criteria)] = train_eval_opt
-        df.loc['GAMsWithInteractionsL0-opt', 'Validation {}'.format(self.eval_criteria)] = val_eval_opt
-        df.loc['GAMsWithInteractionsL0-opt', 'Test {}'.format(self.eval_criteria)] = test_eval_opt
-        df.loc['GAMsWithInteractionsL0-opt', 'Test MSE'], df.loc['GAMsWithInteractionsL0-opt', 'Test RMSE'], df.loc['GAMsWithInteractionsL0-opt', 'Test MAE'], df.loc['GAMsWithInteractionsL0-opt','Standard Error'] = (test_mse_opt, test_rmse_opt, test_mae_opt, std_err_opt)
-        df.loc['GAMsWithInteractionsL0-opt', 'Nonzeros']=len(np.union1d(self.active_set_opt, np.unique(np.array(self.interaction_terms)[self.active_interaction_set_opt])))
-        df.loc['GAMsWithInteractionsL0-opt', 'Optimal Hyperparameters'] = ', '.join([f'{key}: {value}' for key, value in hp_opt.items()])
+        df.loc['AMsWithInteractionsL0-opt', 'Training {}'.format(self.eval_criteria)] = train_eval_opt
+        df.loc['AMsWithInteractionsL0-opt', 'Validation {}'.format(self.eval_criteria)] = val_eval_opt
+        df.loc['AMsWithInteractionsL0-opt', 'Test {}'.format(self.eval_criteria)] = test_eval_opt
+        df.loc['AMsWithInteractionsL0-opt', 'Test MSE'], df.loc['AMsWithInteractionsL0-opt', 'Test RMSE'], df.loc['AMsWithInteractionsL0-opt', 'Test MAE'], df.loc['AMsWithInteractionsL0-opt','Standard Error'] = (test_mse_opt, test_rmse_opt, test_mae_opt, std_err_opt)
+        df.loc['AMsWithInteractionsL0-opt', 'Nonzeros']=len(np.union1d(self.active_set_opt, np.unique(np.array(self.interaction_terms)[self.active_interaction_set_opt])))
+        df.loc['AMsWithInteractionsL0-opt', 'Optimal Hyperparameters'] = ', '.join([f'{key}: {value}' for key, value in hp_opt.items()])
         hp_sp = {'lam_sm': self.lam_sm_sp, 'lam_L0': self.lam_L0_sp}
-        df.loc['GAMsWithInteractionsL0-sp', 'Training {}'.format(self.eval_criteria)] = train_eval_sp
-        df.loc['GAMsWithInteractionsL0-sp', 'Validation {}'.format(self.eval_criteria)] = val_eval_sp
-        df.loc['GAMsWithInteractionsL0-sp', 'Test {}'.format(self.eval_criteria)] = test_eval_sp
-        df.loc['GAMsWithInteractionsL0-sp', 'Test MSE'], df.loc['GAMsWithInteractionsL0-sp', 'Test RMSE'], df.loc['GAMsWithInteractionsL0-sp', 'Test MAE'], df.loc['GAMsWithInteractionsL0-sp','Standard Error'] = (test_mse_sp, test_rmse_sp, test_mae_sp, std_err_sp)
-        df.loc['GAMsWithInteractionsL0-sp', 'Nonzeros']=len(np.union1d(self.active_set_sp, np.unique(np.array(self.interaction_terms)[self.active_interaction_set_sp])))
-        df.loc['GAMsWithInteractionsL0-sp', 'Optimal Hyperparameters'] = ', '.join([f'{key}: {value}' for key, value in hp_sp.items()])
+        df.loc['AMsWithInteractionsL0-sp', 'Training {}'.format(self.eval_criteria)] = train_eval_sp
+        df.loc['AMsWithInteractionsL0-sp', 'Validation {}'.format(self.eval_criteria)] = val_eval_sp
+        df.loc['AMsWithInteractionsL0-sp', 'Test {}'.format(self.eval_criteria)] = test_eval_sp
+        df.loc['AMsWithInteractionsL0-sp', 'Test MSE'], df.loc['AMsWithInteractionsL0-sp', 'Test RMSE'], df.loc['AMsWithInteractionsL0-sp', 'Test MAE'], df.loc['AMsWithInteractionsL0-sp','Standard Error'] = (test_mse_sp, test_rmse_sp, test_mae_sp, std_err_sp)
+        df.loc['AMsWithInteractionsL0-sp', 'Nonzeros']=len(np.union1d(self.active_set_sp, np.unique(np.array(self.interaction_terms)[self.active_interaction_set_sp])))
+        df.loc['AMsWithInteractionsL0-sp', 'Optimal Hyperparameters'] = ', '.join([f'{key}: {value}' for key, value in hp_sp.items()])
         display(df)
-        with open(os.path.join(self.path, 'GAMsWithInteractionsL0.csv'), 'a') as f:
+        with open(os.path.join(self.path, 'AMsWithInteractionsL0.csv'), 'a') as f:
             df.to_csv(f, header=True, sep='\t', encoding='utf-8', index=True)
             
     def visualize_partial_dependences(self, X, Y, use_sparse_solution=False, saveflag=False):

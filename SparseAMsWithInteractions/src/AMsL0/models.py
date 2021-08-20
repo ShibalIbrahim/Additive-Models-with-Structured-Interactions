@@ -268,7 +268,7 @@ class AM(object):
             Ytest: test responses, numpy array of shape (Ntest, ).        
         """
         
-        pen = np.array(['GAMsL0-opt','GAMsL0-sp'])
+        pen = np.array(['AMsL0-opt','AMsL0-sp'])
         M = pen.shape[0]
         df = pd.DataFrame(data={'': pen,
                                 'Training {}'.format(self.eval_criteria): np.zeros(M), 
@@ -325,22 +325,22 @@ class AM(object):
         print('Sparse: Test-MSE: {:.6f}, Test-RMSE: {:.6f}, Test-MAE: {:.6f}, Standard-Error: {:.6f}'.format(test_mse_sp, test_rmse_sp, test_mae_sp, std_err_sp))    
         
         hp_opt = {'lam_sm': self.lam_sm_opt, 'lam_L0': self.lam_L0_opt}
-        df.loc['GAMsL0-opt', 'Training {}'.format(self.eval_criteria)] = train_eval_opt
-        df.loc['GAMsL0-opt', 'Validation {}'.format(self.eval_criteria)] = val_eval_opt
-        df.loc['GAMsL0-opt', 'Test {}'.format(self.eval_criteria)] = test_eval_opt
-        df.loc['GAMsL0-opt', 'Test MSE'], df.loc['GAMsL0-opt', 'Test RMSE'], df.loc['GAMsL0-opt', 'Test MAE'], df.loc['GAMsL0-opt','Standard Error'] = (test_mse_opt, test_rmse_opt, test_mae_opt, std_err_opt)
-        df.loc['GAMsL0-opt', 'Nonzeros']=len(self.active_set_opt)
-        df.loc['GAMsL0-opt', 'Optimal Hyperparameters'] = ', '.join([f'{key}: {value}' for key, value in hp_opt.items()])
+        df.loc['AMsL0-opt', 'Training {}'.format(self.eval_criteria)] = train_eval_opt
+        df.loc['AMsL0-opt', 'Validation {}'.format(self.eval_criteria)] = val_eval_opt
+        df.loc['AMsL0-opt', 'Test {}'.format(self.eval_criteria)] = test_eval_opt
+        df.loc['AMsL0-opt', 'Test MSE'], df.loc['AMsL0-opt', 'Test RMSE'], df.loc['AMsL0-opt', 'Test MAE'], df.loc['AMsL0-opt','Standard Error'] = (test_mse_opt, test_rmse_opt, test_mae_opt, std_err_opt)
+        df.loc['AMsL0-opt', 'Nonzeros']=len(self.active_set_opt)
+        df.loc['AMsL0-opt', 'Optimal Hyperparameters'] = ', '.join([f'{key}: {value}' for key, value in hp_opt.items()])
         hp_sp = {'lam_sm': self.lam_sm_sp, 'lam_L0': self.lam_L0_sp}
-        df.loc['GAMsL0-sp', 'Training {}'.format(self.eval_criteria)] = train_eval_sp
-        df.loc['GAMsL0-sp', 'Validation {}'.format(self.eval_criteria)] = val_eval_sp
-        df.loc['GAMsL0-sp', 'Test {}'.format(self.eval_criteria)] = test_eval_sp
-        df.loc['GAMsL0-sp', 'Test MSE'], df.loc['GAMsL0-sp', 'Test RMSE'], df.loc['GAMsL0-sp', 'Test MAE'], df.loc['GAMsL0-sp','Standard Error'] = (test_mse_sp, test_rmse_sp, test_mae_sp, std_err_sp)
-        df.loc['GAMsL0-sp', 'Nonzeros']=len(self.active_set_sp)
-        df.loc['GAMsL0-sp', 'Optimal Hyperparameters'] = ', '.join([f'{key}: {value}' for key, value in hp_sp.items()])
+        df.loc['AMsL0-sp', 'Training {}'.format(self.eval_criteria)] = train_eval_sp
+        df.loc['AMsL0-sp', 'Validation {}'.format(self.eval_criteria)] = val_eval_sp
+        df.loc['AMsL0-sp', 'Test {}'.format(self.eval_criteria)] = test_eval_sp
+        df.loc['AMsL0-sp', 'Test MSE'], df.loc['AMsL0-sp', 'Test RMSE'], df.loc['AMsL0-sp', 'Test MAE'], df.loc['AMsL0-sp','Standard Error'] = (test_mse_sp, test_rmse_sp, test_mae_sp, std_err_sp)
+        df.loc['AMsL0-sp', 'Nonzeros']=len(self.active_set_sp)
+        df.loc['AMsL0-sp', 'Optimal Hyperparameters'] = ', '.join([f'{key}: {value}' for key, value in hp_sp.items()])
         display(df)
 
-        with open(os.path.join(self.path, 'GAMsL0.csv'), 'a') as f:
+        with open(os.path.join(self.path, 'AMsL0.csv'), 'a') as f:
             df.to_csv(f, header=True, sep='\t', encoding='utf-8', index=True)
         
     def visualize_partial_dependences(self, X, Y, use_sparse_solution=False, saveflag=False):
