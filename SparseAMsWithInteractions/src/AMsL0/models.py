@@ -20,11 +20,11 @@ import time
 from tqdm import notebook
 import warnings
 
-from SparseGAMsWithInteractions.src.GAMsL0 import utilities
-from SparseGAMsWithInteractions.src.GAMsL0 import CrossValidation
-from SparseGAMsWithInteractions.src.GAMsL0 import L0Path
-from SparseGAMsWithInteractions.src.GAMsL0 import CoordinateDescent
-from SparseGAMsWithInteractions.src import utils
+from SparseAMsWithInteractions.src.GAMsL0 import utilities
+from SparseAMsWithInteractions.src.GAMsL0 import CrossValidation
+from SparseAMsWithInteractions.src.GAMsL0 import L0Path
+from SparseAMsWithInteractions.src.GAMsL0 import CoordinateDescent
+from SparseAMsWithInteractions.src import utils
 
 os.environ['QT_QPA_PLATFORM']='offscreen'
 font = {'weight' : 'bold',
