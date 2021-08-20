@@ -1,8 +1,7 @@
 # Proposed Models
 
-The folder contains source files for running proposed models. The folders/files are listed below:
+The folder contains source files for running proposed models. The folders are listed below:
 
-# Proposed Models:
 - AMs under L0 (subfolder: src/AMsL0)
 - AMs with Interactions under L0 (subfolder: src/AMsWithInteractionsL0)
 - AMs with Interactions are strong hierachy (subfolder: src/AMsWithInteractionsStrongHierarchy)
