@@ -17,7 +17,6 @@ Alternatively, the following packages can be downloaded to run the python script
 * descartes                 1.1.0
 * dill                      0.3.3 
 * fiona                     1.8.18
-* geopandas                 0.8.1
 * gurobi                    9.0.1 
 * ipywidgets                7.5.1
 * matplotlib                3.3.2 
@@ -30,7 +29,6 @@ Alternatively, the following packages can be downloaded to run the python script
 * rtree                     0.9.4
 * scikit-learn              0.23.2
 * scipy                     1.5.3
-* shapely                   1.7.1
 * tqdm                      4.54.1
  
 ## Proposed Models
