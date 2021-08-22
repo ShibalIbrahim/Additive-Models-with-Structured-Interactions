@@ -5,11 +5,11 @@ This is our implementation of Additive Models with interactions under L0 subset 
 [Predicting Census Survey Response Rates via Interpretable Nonparametric Additive Models with Structured Interactions](https://arxiv.org/3891614) by Shibal Ibrahim, Rahul Mazumder, Peter Radchenko, Emanuel Ben-David
 
 ## Installation
-We provide a conda environment file named "jasa.yml" for straightforward installation with Anaconda, which can be used to setup a jasa environment with the commands:
+We provide a conda environment file named "sparse-am-with-interactions.yml" for straightforward installation with Anaconda, which can be used to setup a sparse-am-with-interactions environment with the commands:
 
-conda env create --name jasa --file=jasa.yml
+conda env create --name sparse-am-with-interactions --file=sparse-am-with-interactions.yml
 
-source activate jasa
+source activate sparse-am-with-interactions
 
 Alternatively, the following packages can be downloaded to run the python scripts and jupyter notebooks.
 
