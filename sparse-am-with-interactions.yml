@@ -22,8 +22,4 @@ dependencies:
   - nb_conda
   - dill=0.3.3
   - descartes=1.1.0
-  - pip
-  - pip:
-    # works for regular pip packages
-    - hierScale
 prefix: /home/shibal/anaconda3/envs/sparse-am-with-interactions
