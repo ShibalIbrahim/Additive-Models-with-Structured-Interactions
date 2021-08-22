@@ -34,8 +34,9 @@ Alternatively, the following packages can be downloaded to run the python script
 * tqdm                      4.54.1
  
 ## Proposed Models
-* `GAMI`: Additive Models with Interactions under L0
-* `GAMISH`: Additive Models with Interactions with Strong Hierarchy
+* `AM`: Additive Models under L0
+* `AMI`: Additive Models with Interactions under L0
+* `AMISH`: Additive Models with Interactions with Strong Hierarchy
 
 ## Usage
 For a tutorial, please refer to [Sparse Additive Models with Interactions](https://brjhsu.github.io/desktop-tutorial/#introduction-to-generalized-additive-models) Vignette.
