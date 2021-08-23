@@ -1,15 +1,15 @@
 # Additive-Models-with-Structured-Interactions
 
-This is our implementation of Additive Models with interactions under L0 subset selection with/without strong hierarchy and evaluation on Census Surveys Response prediction as described in our manuscript.
+This is our implementation of Additive Models with interactions under L0 subset selection with/without strong hierarchy as described in our manuscript.
 
 [Predicting Census Survey Response Rates via Interpretable Nonparametric Additive Models with Structured Interactions](https://arxiv.org/3891614) by Shibal Ibrahim, Rahul Mazumder, Peter Radchenko, Emanuel Ben-David
 
 ## Installation
-We provide a conda environment file named "jasa.yml" for straightforward installation with Anaconda, which can be used to setup a jasa environment with the commands:
+We provide a conda environment file named "sparse-am-with-interactions.yml" for straightforward installation with Anaconda, which can be used to setup a sparse-am-with-interactions environment with the commands:
 
-conda env create --name jasa --file=jasa.yml
+conda env create --name sparse-am-with-interactions --file=sparse-am-with-interactions.yml
 
-source activate jasa
+source activate sparse-am-with-interactions
 
 Alternatively, the following packages can be downloaded to run the python scripts and jupyter notebooks.
 
@@ -17,7 +17,6 @@ Alternatively, the following packages can be downloaded to run the python script
 * descartes                 1.1.0
 * dill                      0.3.3 
 * fiona                     1.8.18
-* geopandas                 0.8.1
 * gurobi                    9.0.1 
 * ipywidgets                7.5.1
 * matplotlib                3.3.2 
@@ -30,15 +29,15 @@ Alternatively, the following packages can be downloaded to run the python script
 * rtree                     0.9.4
 * scikit-learn              0.23.2
 * scipy                     1.5.3
-* shapely                   1.7.1
 * tqdm                      4.54.1
  
 ## Proposed Models
-* `GAMI`: Additive Models with Interactions under L0
-* `GAMISH`: Additive Models with Interactions with Strong Hierarchy
+* `AM`: Additive Models under L0
+* `AMI`: Additive Models with Interactions under L0
+* `AMISH`: Additive Models with Interactions with Strong Hierarchy
 
 ## Usage
-For a tutorial, please refer to [Sparse Additive Models with Interactions](https://brjhsu.github.io/desktop-tutorial/#introduction-to-generalized-additive-models) Vignette.
+For a tutorial, please refer to [Sparse Additive Models with Interactions](https://brjhsu.github.io/desktop-tutorial/#introduction-to-generalized-additive-models) Vignette (in progress).
 
 ## Running the code
 
@@ -46,9 +45,9 @@ For a tutorial, please refer to [Sparse Additive Models with Interactions](https
 cd SparseGAMsWithInteractions
 
 The following 3 ipython notebooks can be used to run block cyclic coordinate descent algorithm for the three models
-For `GAM`: run src/GAMsL0/GAMsL0.ipynb [no interactions]
-For `GAMI`: run src/GAMsWithInteractionsL0/GAMsWithInteractionsL0.ipynb
-For `GAMISH`: run src/GAMsWithInteractionsStrongHierarchy/GAMsWithInteractionsStrongHierarchy.ipynb
+For `AM`: run src/AMsL0/AMsL0.ipynb [no interactions]
+For `AMI`: run src/AMsWithInteractionsL0/AMsWithInteractionsL0.ipynb
+For `AMISH`: run src/AMsWithInteractionsStrongHierarchy/AMsWithInteractionsStrongHierarchy.ipynb
 ```
 
 ## Citing Additive-Models-with-Structured-Interactions
