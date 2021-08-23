@@ -36,9 +36,6 @@ Alternatively, the following packages can be downloaded to run the python script
 * `AMI`: Additive Models with Interactions under L0
 * `AMISH`: Additive Models with Interactions with Strong Hierarchy
 
-## Usage
-For a tutorial, please refer to [Sparse Additive Models with Interactions](https://brjhsu.github.io/desktop-tutorial/tutorial/) Vignette (in progress).
-
 ## Running the code
 
 ```bash
