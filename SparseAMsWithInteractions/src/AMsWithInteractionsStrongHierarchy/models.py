@@ -250,7 +250,7 @@ class AMISH(object):
         B, B_interaction = self.generate_splines_on_active_set(X, active_set, active_interaction_set)
 
         # Prediction
-        Ypred = np.mean(self.Y) \
+        Ypred = np.mean(self.Y)*np.ones((X.shape[0], self.Y.shape[1])) \
                 + np.array(sum([B[j].dot(beta[j]) for j in active_set]))\
                 + np.array(sum([B_interaction[j].dot(delta[j]) for j in active_interaction_set]))
         

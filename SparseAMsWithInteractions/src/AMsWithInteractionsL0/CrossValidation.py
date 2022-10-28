@@ -105,12 +105,12 @@ def CrossValidation(L0path = None,
             lam_1_sp = deepcopy(lam_1_sp_path)
             lam_2_sp = deepcopy(lam_2_sp_path)
             J_sp = deepcopy(J_sp_path)
-        if (val_loss_opt_path!=np.inf) and (val_loss_opt!=np.inf) and (val_loss_opt_path>1.01*val_loss_opt):
-            break
-        else:
-            active_union_set_path, active_interaction_union_set_path = union_set_path
-            active_union_set =  sorted(list(set(active_union_set) | set(active_union_set_path)))
-            active_interaction_union_set = sorted(list(set(active_interaction_union_set) | set(active_interaction_union_set_path)))
+#         if (val_loss_opt_path!=np.inf) and (val_loss_opt!=np.inf) and (val_loss_opt_path>1.01*val_loss_opt):
+#             break
+#         else:
+        active_union_set_path, active_interaction_union_set_path = union_set_path
+        active_union_set =  sorted(list(set(active_union_set) | set(active_union_set_path)))
+        active_interaction_union_set = sorted(list(set(active_interaction_union_set) | set(active_interaction_union_set_path)))
 
             
     if logging==True:               

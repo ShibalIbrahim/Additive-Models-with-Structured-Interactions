@@ -3,6 +3,7 @@ from contextlib import redirect_stdout
 from copy import deepcopy
 from functools import partial
 from IPython.display import Math
+from IPython.display import display
 from ipywidgets import *
 from matplotlib import pyplot as plt
 from mpl_toolkits import mplot3d
@@ -155,7 +156,7 @@ class AMI(object):
         self.BtrainT_Btrain = [(B.transpose()).dot(B) for B in self.Btrain]
         self.Btrain_interactionT_Btrain_interaction = [(B.transpose()).dot(B) for B in self.Btrain_interaction]
         
-    def fitCV(self, Xval, Yval):
+    def fitCV(self, Xval=None, Yval=None):
         self.Xval = Xval
         self.Yval = Yval
         self.CD_J_AS = (lambda Ypred, beta, zeta, active_set, lam, P, P_interaction : optimizer.CD_Joint_ActiveSet(
@@ -255,7 +256,7 @@ class AMI(object):
         B, B_interaction = self.generate_splines_on_active_set(X, active_set, active_interaction_set)
 
         # Prediction
-        Ypred = np.mean(self.Y) \
+        Ypred = np.mean(self.Y)*np.ones((X.shape[0], self.Y.shape[1])) \
                 + np.array(sum([B[j].dot(beta[j]) for j in active_set]))\
                 + np.array(sum([B_interaction[j].dot(delta[j]) for j in active_interaction_set]))
         
@@ -274,6 +275,7 @@ class AMI(object):
             loss: float scalar.
             std_err: float scalar.
         """
+        print("======Shape", self.predict(X, use_sparse_solution=use_sparse_solution).shape)
         Ypred = self.predict(X, use_sparse_solution=use_sparse_solution).reshape(Y.shape)
         mse, rmse, mae, std_err = utils.metrics(Y, Ypred, y_preprocessor=self.y_scaler)
         return mse, rmse, mae, std_err
