@@ -2,7 +2,7 @@
 
 This is our implementation of Additive Models with interactions under L0 subset selection with/without strong hierarchy as described in our manuscript.
 
-[Predicting Census Survey Response Rates via Interpretable Nonparametric Additive Models with Structured Interactions](https://arxiv.org/3891614) by Shibal Ibrahim, Rahul Mazumder, Peter Radchenko, Emanuel Ben-David
+[Predicting Census Survey Response Rates via Interpretable Nonparametric Additive Models with Structured Interactions](http://arxiv.org/abs/2108.11328) by Shibal Ibrahim, Rahul Mazumder, Peter Radchenko, Emanuel Ben-David
 
 ## Installation
 We provide a conda environment file named "sparse-am-with-interactions.yml" for straightforward installation with Anaconda, which can be used to setup a sparse-am-with-interactions environment with the commands:
@@ -35,9 +35,6 @@ Alternatively, the following packages can be downloaded to run the python script
 * `AM`: Additive Models under L0
 * `AMI`: Additive Models with Interactions under L0
 * `AMISH`: Additive Models with Interactions with Strong Hierarchy
-
-## Usage
-For a tutorial, please refer to [Sparse Additive Models with Interactions](https://brjhsu.github.io/desktop-tutorial/#introduction-to-generalized-additive-models) Vignette (in progress).
 
 ## Running the code
 
