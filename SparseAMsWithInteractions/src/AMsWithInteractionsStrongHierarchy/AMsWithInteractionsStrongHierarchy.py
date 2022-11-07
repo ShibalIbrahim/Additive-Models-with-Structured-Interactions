@@ -61,7 +61,8 @@ args = parser.parse_args()
 # Import Processed Data
 
 load_directory=args.load_directory
-save_directory = os.path.join(os.path.abspath(str(pathlib.Path(__file__).absolute())).split('src')[0], "results") 
+# save_directory = os.path.join(os.path.abspath(str(pathlib.Path(__file__).absolute())).split('src')[0], "results") 
+save_directory = "/pool001/shibal/aoas_results" 
 
 df_X, df_y, _ = data_utils.load_data(load_directory=load_directory,
                                   filename='pdb2019trv3_us.csv',
@@ -89,7 +90,7 @@ version = args.version
 #     print(c)
 
 ### How to run the model
-path = os.path.join(save_directory, 'AMsWithInteractionsStrongHierarchy', 'v{}'.format(version), 'r{}'.format(r), 'seed{}'.format(seed))
+path = os.path.join(save_directory, 'AMsWithInteractionsStrongHierarchy', 'v{}'.format(version), 'r{}'.format(r), 'seed{}'.format(seed), 'secondround')
 os.makedirs(path, exist_ok=True)
 
 
@@ -109,7 +110,7 @@ load_path = os.path.join(save_directory, 'AMsWithInteractionsL0', 'v{}'.format(v
 with open(os.path.join(load_path, 'model_final.pkl'), 'rb') as input:
     ami = dill.load(input)
 active_set = ami.active_set_union
-interaction_terms = ami.interaction_terms_union[:10]
+interaction_terms = ami.interaction_terms_union
 active_set = np.sort(np.union1d(active_set, np.unique(interaction_terms)))
 # print("Number of main effects to consider:", len(active_set)) # we consider all main effects 
 print("Number of interaction effects to consider:", len(interaction_terms))
@@ -122,7 +123,7 @@ lams_sm = np.array([ami.lam_sm_opt])
 
 lams_L0_start = 2
 lams_L0_stop = -2
-lams_L0 = np.logspace(start=lams_L0_start, stop=lams_L0_stop, num=1, base=10.0)
+lams_L0 = np.logspace(start=lams_L0_start, stop=lams_L0_stop, num=10, base=10.0)
 # lam_L0_index = 6 # optimal
 # lams_L0 = [np.logspace(start=lams_L0_start, stop=lams_L0_stop, num=10, base=10.0)[lam_L0_index]]
 amish = models.AMISH(lams_sm=lams_sm,
@@ -138,6 +139,7 @@ amish.get_main_and_interaction_set(interaction_terms=interaction_terms)
 amish.generate_splines_and_quadratic_penalties(ami.Ki, ami.Kij)
 amish.fitCV(Xval, Yval)
 amish.evaluate_and_save(Xtest, Ytest)
+amish.X = None
 amish.Btrain = None
 amish.BtrainT_Btrain = None
 amish.Btrain_interaction = None
