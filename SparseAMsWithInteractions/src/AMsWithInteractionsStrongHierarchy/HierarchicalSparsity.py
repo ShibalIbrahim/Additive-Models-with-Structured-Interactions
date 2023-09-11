@@ -149,12 +149,19 @@ def MIP_HierarchicalSparsity_ActiveSet(Ypred = None,
     YTX = np.matmul(np.transpose(res), P)[0,:]
     XTX = np.matmul(np.transpose(P), P)
 
-    mod.setObjective((1/(2*N))*(np.dot(res[:,0], res[:,0])\
-                                -2*(YTX@omega_var)\
-                                +omega_var@(XTX+(2*N)*(lam[0]*Q + eps*np.identity(omega_var.shape[0])))@omega_var)\
-                     +lam[1]*(np.ones(zeta_var.shape[0])@zeta_var)\
-                     +r*lam[1]*(np.ones(alpha_var.shape[0])@alpha_var)\
-                     )
+    mod.setObjective(
+        (1/(2*N))*(
+            np.dot(res[:,0], res[:,0])\
+            -2*(YTX@omega_var)\
+            +omega_var@(
+                XTX+(2*N)*(
+                    lam[0]*Q + eps*np.identity(omega_var.shape[0])
+                )
+            )@omega_var
+        )\
+        +lam[1]*(np.ones(zeta_var.shape[0])@zeta_var)\
+        +r*lam[1]*(np.ones(alpha_var.shape[0])@alpha_var)\
+    )
                      
     
     # Update model with objective

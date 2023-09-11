@@ -15,19 +15,19 @@ import argparse
 import pathlib
 from sklearn.metrics import mean_squared_error
 from IPython.display import display
-from scipy import stats
 
 sys.path.insert(0, os.path.abspath(str(pathlib.Path(__file__).absolute())).split('SparseAMsWithInteractions')[0])
 from SparseAMsWithInteractions.src import data_utils
 from SparseAMsWithInteractions.src import utils
-from SparseAMsWithInteractions.src.AMsWithInteractionsL0 import models
+from SparseAMsWithInteractions.src.AMsWithInteractionsStrongHierarchy import models
+
 from sklearn.preprocessing import StandardScaler, FunctionTransformer
 from sklearn.model_selection import KFold
 
 from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
              
-parser = argparse.ArgumentParser(description='ELAAN on synthetic data.')
+parser = argparse.ArgumentParser(description='ELAAN-H on synthetic data.')
 
 # Data Arguments
 parser.add_argument('--seed', dest='seed',  type=int, default=8)
@@ -39,12 +39,13 @@ parser.add_argument('--dist', dest='dist',  type=str, default='normal')
 parser.add_argument('--Ki', dest='Ki',  type=int, default=10)
 parser.add_argument('--Kij', dest='Kij',  type=int, default=5)
 
-
 # Logging Arguments
 parser.add_argument('--path', dest='path',  type=str, default='/pool001/shibal')
 parser.add_argument('--version', dest='version',  type=int, default=1)
-parser.add_argument('--r', dest='r',  type=float, default=2.0)
-
+parser.add_argument('--r', dest='r',  type=float, default=1.0)
+parser.add_argument('--use_sparse', dest='use_sparse', action='store_true')
+parser.add_argument('--no-use_sparse', dest='use_sparse', action='store_false')
+parser.set_defaults(use_sparse=False)
 
 args = parser.parse_args()
                 
@@ -106,8 +107,8 @@ if args.dataset == 'synthetic':
     
     lams_sm_start = -2
     lams_sm_stop = -6
-    lams_L0_start = -1
-    lams_L0_stop = -5
+    lams_L0_start = 0
+    lams_L0_stop = -4
     
 elif args.dataset == 'large-synthetic':
     p = 500
@@ -195,11 +196,9 @@ elif args.dataset == 'large-synthetic':
         ]
     ):
         interaction_support_true[(term.reshape(1,-1)==interaction_terms_all).all(axis=1)] = 1
-    lams_sm_start = -3
-    lams_sm_stop = -7
-    lams_L0_start = 0
-    lams_L0_stop = -6
-    max_interaction_support=50 # cuts off the L0 regularization path when the number of interactions reach 50.
+    lams_L0_start = 2
+    lams_L0_stop = -2
+    max_interaction_support=50 # cuts off the L0 regularization path when the number of interactions reach 400.
     
 elif args.dataset == 'large-synthetic-correlated':
     p = 500
@@ -291,12 +290,10 @@ elif args.dataset == 'large-synthetic-correlated':
         ]
     ):
         interaction_support_true[(term.reshape(1,-1)==interaction_terms_all).all(axis=1)] = 1
-    lams_sm_start = -3
-    lams_sm_stop = -7
-    lams_L0_start = 0
-    lams_L0_stop = -4
-    max_interaction_support=50 # cuts off the L0 regularization path when the number of interactions reach 50.
-
+    lams_L0_start = 2
+    lams_L0_stop = -2
+    max_interaction_support=100 # cuts off the L0 regularization path when the number of interactions reach 400.
+    
 elif args.dataset == 'large-synthetic-correlated-aoas':
     p = 500
     k = 50
@@ -383,19 +380,17 @@ elif args.dataset == 'large-synthetic-correlated-aoas':
     interaction_support_true = np.zeros((len(interaction_terms_all)))
     for term in true_interactions:
         interaction_support_true[(term.reshape(1,-1)==interaction_terms_all).all(axis=1)] = 1
-    lams_sm_start = -3
-    lams_sm_stop = -7
-    lams_L0_start = 1
-    lams_L0_stop = -5
+    lams_L0_start = 2
+    lams_L0_stop = -2
     max_interaction_support=200 # cuts off the L0 regularization path when the number of interactions reach 100.
-    
-                
+
+
 def identity_func(x):
     return np.array(x)
 y_preprocessor = FunctionTransformer(lambda x: np.array(x)) # acts as identity
 y_scaler = y_preprocessor
 
-save_directory = os.path.join("/pool001/shibal", "results-synthetic", args.dataset, args.dist, "N_train_{}".format(args.train_size), "seed{}".format(args.seed)) 
+save_directory = os.path.join(args.path, "results-synthetic", args.dataset, args.dist, "N_train_{}".format(args.train_size), "seed{}".format(args.seed)) 
 
 convergence_tolerance = 1e-4
 column_names = np.arange(Xtrain.shape[1])
@@ -404,29 +399,31 @@ logging = True
 version = args.version
 
 
+
 eval_criteria = 'mse'
 _, p = Xtrain.shape
 
-# lams_sm=np.array([0.0])
-lams_sm=np.logspace(start=lams_sm_start, stop=lams_sm_stop, num=20, base=10.0)
-lams_L0=np.logspace(start=lams_L0_start, stop=lams_L0_stop, num=50, base=10.0)
 
 
 path = os.path.join(
     save_directory,
-    'AMsWithInteractionsL0',
+    'AMsWithInteractionsStrongHierarchy',
     'v{}'.format(version),
     'r{}'.format(r),
+    'use_sparse_{}'.format(args.use_sparse)
 )
 os.makedirs(path, exist_ok=True)
-
 
 if args.dataset=='synthetic':
     kf = KFold(n_splits=num_of_folds, random_state=None)
     kf.get_n_splits(Xtrain)
 
+    lams_sm=np.logspace(start=lams_sm_start, stop=lams_sm_stop, num=10, base=10.0)
+    lams_L0=np.logspace(start=lams_L0_start, stop=lams_L0_stop, num=10, base=10.0)
+
     Xmin = np.min(np.vstack([Xtrain, Xtest]), axis=0)
     Xmax = np.max(np.vstack([Xtrain, Xtest]), axis=0)
+    
     for fold, (train_index, val_index) in enumerate(kf.split(Xtrain)):
         print("===================FOLD: {} ================".format(fold))
     #     print("TRAIN:", train_index, "VAL:", val_index)
@@ -440,60 +437,48 @@ if args.dataset=='synthetic':
             f.write('Logging: {}, tol: {:.6f}, Train: {}, Validation: {}, Test: {}\n'.format(
                 logging, convergence_tolerance, X_train.shape[0], X_val.shape[0], Xtest.shape[0]))
 
+        amish = models.AMISH(lams_sm=lams_sm,
+                             lams_L0=lams_L0,
+                             alpha=r,
+                             convergence_tolerance=convergence_tolerance,
+                             eval_criteria=eval_criteria,
+                             path=path_fold,
+                             max_interaction_support=max_interaction_support,
+                             terminate_val_L0path=False
+                            )
+        amish.load_data(X_train, y_train, y_scaler, column_names, Xmin, Xmax)
+#         interaction_terms = []
+#         for m in range(0, p):
+#             for n in range(0, p):
+#                 if m!=n and m<n:
+#                     interaction_terms.append((m, n))
+#         interaction_terms = np.array(interaction_terms)
 
-        am = models.AMI(lams_sm=lams_sm,
-                        lams_L0=lams_L0,
-                        alpha=r,
-                        convergence_tolerance=convergence_tolerance,
-                        eval_criteria=eval_criteria,
-                        path=path_fold,
-                        max_interaction_support=max_interaction_support,
-                        terminate_val_L0path=False
-                        )
-        am.load_data(X_train, y_train, y_scaler, column_names, Xmin, Xmax)
-        if len(interaction_terms_all)>10000:
-            am.generate_interaction_terms(generate_all_pairs=False, Imax=10000)
-        else:
-            am.generate_interaction_terms(generate_all_pairs=True)
-        print("Number of interaction effects to consider:", len(am.interaction_terms))
+        amish.get_main_and_interaction_set(active_set=None, interaction_terms=interaction_terms_all)
+        print("Number of main effects to consider:", len(amish.active_set))
+        print("Number of interaction effects to consider:", len(amish.interaction_terms))
 
-        am.generate_splines_and_quadratic_penalties(Ki=Ki, Kij=Kij)
-        am.fitCV(X_val, y_val)
+        amish.generate_splines_and_quadratic_penalties(Ki=Ki, Kij=Kij)
+        amish.fitCV(X_val, y_val)
 
-        interaction_terms = np.array([am.interaction_terms[k] for k in am.active_interaction_set_opt])
-
-        if fold==0:
-            print("=========interaction_terms:", interaction_terms)
-            interaction_terms_union = deepcopy(interaction_terms)
-            print("=========interaction_terms_union:", interaction_terms_union)
-        else:
-            print("=========interaction_terms:", interaction_terms)
-            if len(interaction_terms)>0 and len(interaction_terms_union)>0:
-                interaction_terms_union = np.concatenate([interaction_terms_union, interaction_terms], axis=0)
-            elif len(interaction_terms)==0:
-                pass
-            elif len(interaction_terms_union)==0:
-                interaction_terms_union = deepcopy(interaction_terms)
-            print("=========interaction_terms_union:", interaction_terms_union)
-
-        am.evaluate_and_save(X_val, y_val)
-        am.Btrain = None
-        am.BtrainT_Btrain = None
-        am.Btrain_interaction = None
-        am.Btrain_interactionT_Btrain_interaction = None
+        amish.evaluate_and_save(X_val, y_val)
+        amish.Btrain = None
+        amish.BtrainT_Btrain = None
+        amish.Btrain_interaction = None
+        amish.Btrain_interactionT_Btrain_interaction = None
         with open(os.path.join(path_fold, 'model.pkl'), 'wb') as output:
-            dill.dump(am, output)
+            dill.dump(amish, output)
 
         with open(path_fold+'/Results.txt', "a") as f:
-            f.write('Main-effects: {}\n'.format(am.active_set_opt))
-            f.write('Interaction-effects: {}\n'.format([am.interaction_terms[k] for k in am.active_interaction_set_opt]))
+            f.write('Main-effects: {}\n'.format(amish.active_set_opt))
+            f.write('Interaction-effects: {}\n'.format([amish.interaction_terms[k] for k in amish.active_interaction_set_opt]))
 
 
 
     ###### Read csv files per fold to find optimal hyperparameters        
     for fold in range(num_of_folds):
         print(fold)
-        df_temp = pd.read_csv(os.path.join(os.path.join(path,'fold{}'.format(fold)), 'Training.csv')).set_index(['Smoothness', '        L0      '])[['    val     ']]
+        df_temp = pd.read_csv(os.path.join(os.path.join(path,'fold{}'.format(fold)), 'Training-HS.csv')).set_index(['lambda_1','lambda_2','tau'])[['val']]
         df_temp.columns = ['val-{}'.format(fold)]
         if fold==0:
             df = df_temp.copy()
@@ -501,135 +486,175 @@ if args.dataset=='synthetic':
             df = df.join(df_temp, how='outer')    
         display(df)
     dfr = df.reset_index()
-    dfr = dfr.sort_values(by=['Smoothness'], ascending=False).set_index(['Smoothness', '        L0      '])
+    dfr = dfr.sort_values(by=['lambda_1'], ascending=False).set_index(['lambda_1','lambda_2','tau'])
     dfr = dfr.mean(axis=1)
     dfr = dfr[dfr==dfr.min()].reset_index()        
     display(dfr)
-    L0_opt = dfr['        L0      '].values[0]
-    Smoothness_opt = dfr['Smoothness'].values[0]   
-elif args.dataset in ['large-synthetic', 'large-synthetic-correlated','large-synthetic-correlated-aoas']:
-    Xmin = np.min(np.vstack([Xtrain, Xval, Xtest]), axis=0)
-    Xmax = np.max(np.vstack([Xtrain, Xval, Xtest]), axis=0)
+    L0_opt = dfr['lambda_2'].values[0]
+    Smoothness_opt = dfr['lambda_1'].values[0]   
+    tau_opt = dfr['tau'].values[0]   
+
+elif args.dataset in ['large-synthetic', 'large-synthetic-correlated', 'large-synthetic-correlated-aoas']:
     print("===================FOLD: {} ================".format(0))
 #     print("TRAIN:", train_index, "VAL:", val_index)
     X_train, X_val = Xtrain, Xval
     y_train, y_val = ytrain, yval
 
-    path_fold = os.path.join(path,'fold{}'.format(0))
-    os.makedirs(path_fold, exist_ok=True)
-
-    with open(path_fold+'/Parameters.txt', "w") as f:
-        f.write('Logging: {}, tol: {:.6f}, Train: {}, Validation: {}, Test: {}\n'.format(
-            logging, convergence_tolerance, X_train.shape[0], X_val.shape[0], Xtest.shape[0]))
+    Xmin = np.min(np.vstack([Xtrain, Xval, Xtest]), axis=0)
+    Xmax = np.max(np.vstack([Xtrain, Xval, Xtest]), axis=0)
 
 
-    am = models.AMI(lams_sm=lams_sm,
-                    lams_L0=lams_L0,
-                    alpha=r,
-                    convergence_tolerance=convergence_tolerance,
-                    eval_criteria=eval_criteria,
-                    path=path_fold,
-                    max_interaction_support=max_interaction_support,
-                    terminate_val_L0path=False
-                    )
-    am.load_data(X_train, y_train, y_scaler, column_names, Xmin, Xmax)
-    if len(interaction_terms_all)>10000:
-        am.generate_interaction_terms(generate_all_pairs=False, Imax=10000)
+        
+    ###### Load fitted AMs with Interaction model and recover reduced supports for downstream Strong Hierarchy Model
+    load_path = os.path.join(save_directory, 'AMsWithInteractionsL0', 'v{}'.format(version), 'r{}'.format(1.0), 'fold0')
+
+    with open(os.path.join(load_path, 'model.pkl'), 'rb') as input:
+        ami = dill.load(input)
+    active_set = ami.active_set_union
+    interaction_terms_reduced = ami.interaction_terms_union
+    active_set = np.sort(np.union1d(active_set, np.unique(interaction_terms_reduced)))
+    # print("Number of main effects to consider:", len(active_set)) # we consider all main effects 
+    print("Number of interaction effects to consider:", len(interaction_terms_reduced))
+
+    ###### Call and run AMs with Interaction with Strong Hierarchy Model    
+    # lams_sm_start = -3
+    # lams_sm_stop = -7
+    #lams_sm=np.logspace(start=lams_sm_start, stop=lams_sm_stop, num=20, base=10.0)
+    lams_sm = np.array([ami.lam_sm_opt])
+    lams_L0 = np.logspace(start=lams_L0_start, stop=lams_L0_stop, num=10, base=10.0)
+        
+        
+
+    if not args.use_sparse:
+        path_fold = os.path.join(path,'fold{}'.format(0))
+        os.makedirs(path_fold, exist_ok=True)
+        with open(path_fold+'/Parameters.txt', "w") as f:
+            f.write('Logging: {}, tol: {:.6f}, Train: {}, Validation: {}, Test: {}\n'.format(
+                logging, convergence_tolerance, X_train.shape[0], X_val.shape[0], Xtest.shape[0]))
+            
+        amish = models.AMISH(lams_sm=lams_sm,
+                             lams_L0=lams_L0,
+                             alpha=r,
+                             convergence_tolerance=convergence_tolerance,
+                             eval_criteria=eval_criteria,
+                             path=path_fold,
+                             max_interaction_support=max_interaction_support,
+                             terminate_val_L0path=False
+                            )
+        amish.load_data(X_train, y_train, y_scaler, column_names, Xmin, Xmax)
+        # interaction_terms_all = []
+        # for m in range(0, p):
+        #     for n in range(0, p):
+        #         if m!=n and m<n:
+        #             interaction_terms_all.append((m, n))
+        # interaction_terms_all = np.array(interaction_terms_all)
+
+        amish.get_main_and_interaction_set(active_set=active_set, interaction_terms=interaction_terms_reduced)
+        print("Number of main effects to consider:", len(amish.active_set))
+        print("Number of interaction effects to consider:", len(amish.interaction_terms))
+
+        amish.generate_splines_and_quadratic_penalties(Ki=Ki, Kij=Kij)
+        amish.fitCV(X_val, y_val)
+
+        amish.evaluate_and_save(X_val, y_val)
+        amish.Btrain = None
+        amish.BtrainT_Btrain = None
+        amish.Btrain_interaction = None
+        amish.Btrain_interactionT_Btrain_interaction = None
+        with open(os.path.join(path_fold, 'model.pkl'), 'wb') as output:
+            dill.dump(amish, output)
+
+        with open(path_fold+'/Results.txt', "a") as f:
+            f.write('Main-effects: {}\n'.format(amish.active_set_opt))
+            f.write('Interaction-effects: {}\n'.format([amish.interaction_terms[k] for k in amish.active_interaction_set_opt]))
     else:
-        am.generate_interaction_terms(generate_all_pairs=True)
-    print("Number of interaction effects to consider:", len(am.interaction_terms))
-
-    am.generate_splines_and_quadratic_penalties(Ki=Ki, Kij=Kij)
-    am.fitCV(X_val, y_val)
-
-    interaction_terms = np.array([am.interaction_terms[k] for k in am.active_interaction_set_opt])
-
-    interaction_terms_union = deepcopy(interaction_terms)
-    print("=========interaction_terms_union:", interaction_terms_union)
-
-    am.evaluate_and_save(X_val, y_val)
-    am.Btrain = None
-    am.BtrainT_Btrain = None
-    am.Btrain_interaction = None
-    am.Btrain_interactionT_Btrain_interaction = None
-    with open(os.path.join(path_fold, 'model.pkl'), 'wb') as output:
-        dill.dump(am, output)
-
-    with open(path_fold+'/Results.txt', "a") as f:
-        f.write('Main-effects: {}\n'.format(am.active_set_opt))
-        f.write('Interaction-effects: {}\n'.format([am.interaction_terms[k] for k in am.active_interaction_set_opt]))
-
+        path_fold = os.path.join(path,'../use_sparse_False', 'fold{}'.format(0))
 
 
     ###### Read csv files per fold to find optimal hyperparameters        
-    df = pd.read_csv(os.path.join(os.path.join(path,'fold{}'.format(0)), 'Training.csv')).set_index(['Smoothness', '        L0      '])[['    val     ']]
+    df = pd.read_csv(os.path.join(path_fold, 'Training-HS.csv')).set_index(['lambda_1','lambda_2','tau','Main-Effects','Interaction-Effects'])[['val']]
     df.columns = ['val-{}'.format(0)]
     display(df)
     dfr = df.reset_index()
-    dfr = dfr.sort_values(by=['Smoothness'], ascending=False).set_index(['Smoothness', '        L0      '])
+    dfr = dfr.sort_values(by=['lambda_1','lambda_2','tau'], ascending=False).set_index(['lambda_1','lambda_2','tau','Main-Effects','Interaction-Effects'])
     dfr = dfr.mean(axis=1)
-    dfr = dfr[dfr==dfr.min()].reset_index()        
-    display(dfr)
-    L0_opt = dfr['        L0      '].values[0]
-    Smoothness_opt = dfr['Smoothness'].values[0]   
+
+    df_opt = dfr[dfr==dfr.min()].reset_index()        
+#     display(df_opt)
+    val_opt = dfr.min()
+    L0_opt = df_opt['lambda_2'].values[0]
+    Smoothness_opt = df_opt['lambda_1'].values[0]   
+    tau_opt = df_opt['tau'].values[0] 
+    
+    if args.use_sparse:
+        nnz_main_opt = df_opt['Main-Effects'].values[0]
+        nnz_interaction_opt = df_opt['Interaction-Effects'].values[0]
+
+        dfr = dfr[((dfr-val_opt)<0.1*val_opt)].reset_index()
+        dfr["Components"] = dfr["Main-Effects"]+dfr['Interaction-Effects']
+        dfr = dfr[dfr["Components"]==dfr["Components"].min()]
+    #     display(dfr)
+        dfr = dfr.set_index(['lambda_1','lambda_2','tau','Main-Effects','Interaction-Effects','Components'])
+
+        df_sp = dfr[dfr==dfr.min()].reset_index()        
+        val_sp = dfr.min()
+        L0_sp = df_sp['lambda_2'].values[0]
+        Smoothness_sp = df_sp['lambda_1'].values[0]   
+        tau_sp = df_sp['tau'].values[0]     
+        L0_opt = deepcopy(L0_sp)
+        Smoothness_opt = deepcopy(Smoothness_sp)
+        tau_opt = deepcopy(tau_sp)
+    
 
 ###### Refit for optimal smoothness on train + val
 with open(path+'/Parameters.txt', "w") as f:
     f.write('Logging: {}, tol: {:.6f}, Train+Validation: {}, Test: {}\n'.format(
         logging, convergence_tolerance, Xtrain.shape[0], Xtest.shape[0]))
 
+lams_sm_opt=np.array([Smoothness_opt])
+lams_L0_opt=np.array([L0_opt]) 
+taus = np.logspace(start=0, stop=-2, num=50, base=10)
+taus_opt = taus[taus>=tau_opt]
+
+amish = models.AMISH(lams_sm=lams_sm_opt,
+                     lams_L0=lams_L0_opt,
+                     taus=taus_opt,
+                     alpha=r,
+                     convergence_tolerance=convergence_tolerance,
+                     eval_criteria=eval_criteria,
+                     path=path,
+                     max_interaction_support=max_interaction_support,
+                     terminate_val_L0path=False
+                    )
+
+amish.load_data(Xtrain, ytrain, y_scaler, column_names, Xmin, Xmax)
 if args.dataset=='synthetic':
-    lams_sm_opt=np.array([Smoothness_opt])
-    lams_L0_opt=np.array([L0_opt]) 
+    amish.get_main_and_interaction_set(active_set=None, interaction_terms=interaction_terms_all)
 elif args.dataset in ['large-synthetic', 'large-synthetic-correlated', 'large-synthetic-correlated-aoas']:
-    lams_sm_opt=np.array([Smoothness_opt])
-    lams_L0_opt=lams_L0[lams_L0>=L0_opt]
+    amish.get_main_and_interaction_set(active_set=active_set, interaction_terms=interaction_terms_reduced)
 
-am = models.AMI(lams_sm=lams_sm_opt,
-                lams_L0=lams_L0_opt,
-                alpha=r,
-                convergence_tolerance=convergence_tolerance,
-                eval_criteria=eval_criteria,
-                path=path,
-                max_interaction_support=max_interaction_support,
-                terminate_val_L0path=False
-                )
-am.load_data(Xtrain, ytrain, y_scaler, column_names, Xmin, Xmax)
+print("Number of interaction effects to consider:", len(amish.interaction_terms))
 
-if len(interaction_terms_union)>0:
-    interaction_terms_union = np.unique(interaction_terms_union, axis=0)
-    am.interaction_terms = interaction_terms_union
-    am.generate_all_pairs = False
-    am.I = (int)(comb(am.p, 2, exact=False))
-    am.Imax = len(interaction_terms_union)
-else:
-    if len(interaction_terms_all)>10000:
-        am.generate_interaction_terms(generate_all_pairs=False, Imax=10000)
-    else:
-        am.generate_interaction_terms(generate_all_pairs=True)
-
-print("Number of interaction effects to consider:", len(am.interaction_terms))
-
-am.generate_splines_and_quadratic_penalties(Ki=Ki, Kij=Kij)
+amish.generate_splines_and_quadratic_penalties(Ki=Ki, Kij=Kij)
 if args.dataset=='synthetic':
-    am.fitCV(Xval=Xtrain, Yval=ytrain) # only matters when not running for single value.
-elif args.dataset in ['large-synthetic', 'large-synthetic-correlated','large-synthetic-correlated-aoas']:
-    am.fitCV(Xval=Xval, Yval=yval)
+    amish.fitCV(Xval=Xtrain, Yval=ytrain) # only matters when not running for single value.
+elif args.dataset in ['large-synthetic', 'large-synthetic-correlated', 'large-synthetic-correlated-aoas']:
+    amish.fitCV(Xval=Xval, Yval=yval)
 
-am.evaluate_and_save(Xtest, ytest)
-am.Btrain = None
-am.BtrainT_Btrain = None
-am.Btrain_interaction = None
-am.Btrain_interactionT_Btrain_interaction = None
+amish.evaluate_and_save(Xtest, ytest)
+amish.Btrain = None
+amish.BtrainT_Btrain = None
+amish.Btrain_interaction = None
+amish.Btrain_interactionT_Btrain_interaction = None
 with open(os.path.join(path, 'model.pkl'), 'wb') as output:
-    dill.dump(am, output)
+    dill.dump(amish, output)
 
 
-ftest_predict = am.predict(Xtest)
+ftest_predict = amish.predict(Xtest)
 true_error = mean_squared_error(ftest, ftest_predict)
 
-main_effects = np.array(am.active_set_opt)
-interaction_effects = np.array([am.interaction_terms[k] for k in am.active_interaction_set_opt])
+main_effects = np.array(amish.active_set_opt)
+interaction_effects = np.array([amish.interaction_terms[k] for k in amish.active_interaction_set_opt])
 
 # Compute FPR and FNR for main effects
 main_support_recovered = np.zeros_like(main_support_true)
@@ -648,7 +673,6 @@ if len(interaction_effects)>0:
     for term in interaction_effects:
         interaction_support_recovered[(term.reshape(1,-1)==interaction_terms_all).all(axis=1)] = 1
 
-
 from sklearn.metrics import recall_score
 tpr_interaction = recall_score(interaction_support_true, interaction_support_recovered)   # it is better to name it y_test 
 # to calculate, tnr we need to set the positive label to the other class
@@ -659,7 +683,7 @@ fnr_interaction = 1 - tpr_interaction
 f1_interaction = f1_score(interaction_support_true, interaction_support_recovered)
 
 
-with open(path+'/Results.txt', "a") as f:
+with open(path+'/Results-HS.txt', "a") as f:
     f.write('\n True Test MSE: {}\n'.format(true_error))
     f.write('FPR (main): {}\n'.format(fpr_main))
     f.write('FNR (main): {}\n'.format(fnr_main))

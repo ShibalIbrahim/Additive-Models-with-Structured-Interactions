@@ -115,8 +115,8 @@ def CrossValidation(L0path = None,
             
     if logging==True:               
         with open(path+'/Results.txt', "a") as f:
-            f.write('Optimal: \lambda_1: {:.7f},\lambda_2: {:.7f}, Val-MAE: {:.6f}, J: {:.6f},Main-Effects: {},Interaction Effects: {}\n'.format(lam_1_opt,lam_2_opt,val_loss_opt,J_opt,np.count_nonzero(zeta_opt[0,:]),np.count_nonzero(alpha_opt[0,:]))) 
-            f.write('Sparse: \lambda_1: {:.7f},\lambda_2: {:.7f}, Val-MAE: {:.6f}, J: {:.6f},Main-Effects: {},Interaction Effects: {}\n'.format(lam_1_sp,lam_2_sp,val_loss_sp,J_opt,np.count_nonzero(zeta_sp[0,:]),np.count_nonzero(alpha_sp[0,:]))) 
+            f.write('Optimal: \lambda_1: {:.7f},\lambda_2: {:.7f}, val: {:.6f}, J: {:.6f},Main-Effects: {},Interaction Effects: {}\n'.format(lam_1_opt,lam_2_opt,val_loss_opt,J_opt,np.count_nonzero(zeta_opt[0,:]),np.count_nonzero(alpha_opt[0,:]))) 
+            f.write('Sparse: \lambda_1: {:.7f},\lambda_2: {:.7f}, val: {:.6f}, J: {:.6f},Main-Effects: {},Interaction Effects: {}\n'.format(lam_1_sp,lam_2_sp,val_loss_sp,J_opt,np.count_nonzero(zeta_sp[0,:]),np.count_nonzero(alpha_sp[0,:]))) 
 #     display(Math(r'Optimal~~~\lambda_1: {:.6f}, \lambda_2: {:.6f}, Val-MAE: {:.6f}, '.format(lam_1_opt,lam_2_opt,val_loss_opt) + '\sum_{j \in S^c} z_j:'+'{}, '.format(np.count_nonzero(zeta_opt[0,:])) + '\sum_{ij \in S^c}z_{ij}:' + '{}.'.format(np.count_nonzero(alpha_opt[0,:]))))
         beta_opt_save = np.empty(len(beta_opt), np.object)
         beta_opt_save[:] = beta_opt
@@ -160,8 +160,8 @@ def CrossValidation(L0path = None,
                             active_interaction_union_set_indices=active_interaction_union_set,
                             active_interaction_union_set_names=[(column_names[i], column_names[j]) for i, j in [interaction_terms[k] for k in active_interaction_union_set]])
 
-    print('Optimal: \lambda_1: {:.7f},\lambda_2: {:.7f}, Val-MAE: {:.6f}, J: {:.6f},Main-Effects: {},Interaction Effects: {}\n'.format(lam_1_opt,lam_2_opt,val_loss_opt,J_opt,np.count_nonzero(zeta_opt[0,:]),np.count_nonzero(alpha_opt[0,:])))
-    print('Sparse: \lambda_1: {:.7f},\lambda_2: {:.7f}, Val-MAE: {:.6f}, J: {:.6f},Main-Effects: {},Interaction Effects: {}\n'.format(lam_1_sp,lam_2_sp,val_loss_sp,J_opt,np.count_nonzero(zeta_sp[0,:]),np.count_nonzero(alpha_sp[0,:])))
+    print('Optimal: \lambda_1: {:.7f},\lambda_2: {:.7f}, val: {:.6f}, J: {:.6f},Main-Effects: {},Interaction Effects: {}\n'.format(lam_1_opt,lam_2_opt,val_loss_opt,J_opt,np.count_nonzero(zeta_opt[0,:]),np.count_nonzero(alpha_opt[0,:])))
+    print('Sparse: \lambda_1: {:.7f},\lambda_2: {:.7f}, val: {:.6f}, J: {:.6f},Main-Effects: {},Interaction Effects: {}\n'.format(lam_1_sp,lam_2_sp,val_loss_sp,J_opt,np.count_nonzero(zeta_sp[0,:]),np.count_nonzero(alpha_sp[0,:])))
 
     return (beta_opt, delta_opt, zeta_opt, alpha_opt, lam_1_opt, lam_2_opt, J_opt, active_set_opt, active_interaction_set_opt),(beta_sp, delta_sp, zeta_sp, alpha_sp, lam_1_sp, lam_2_sp, J_sp, active_set_sp, active_interaction_set_sp), (active_union_set, active_interaction_union_set)
 
