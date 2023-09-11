@@ -32,9 +32,9 @@ Alternatively, the following packages can be downloaded to run the python script
 * tqdm                      4.54.1
  
 ## Proposed Models
-* `AM`: Additive Models under L0 [no interactions, ELAAN in the paper]
-* `AMI`: Additive Models with Interactions under L0 [with interactions, ELAAN-I in the paper]
-* `AMISH`: Additive Models with Interactions with Strong Hierarchy [with hierarchical interactions, ELAAN-H in the paper]
+* `ELAAN`: Additive Models under L0
+* `ELAAN-I`: Additive Models with Interactions under L0
+* `ELAAN-H`: Additive Models with Interactions with Strong Hierarchy
 
 ## Running the code
 
