@@ -1,4 +1,4 @@
-## Additive Models under L0
+## ELAAN: Additive Models under L0
 
 This folder contains the source files for running the additive model under L0 (Only main effects)
 
