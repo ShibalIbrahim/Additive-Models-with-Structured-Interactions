@@ -1,4 +1,4 @@
-## Additive Models with Interactions under L0
+## ELAAN-I: Additive Models with Interactions under L0
 
 This folder contains the source files for running the additive model with interactions under L0
 
