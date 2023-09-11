@@ -1,4 +1,4 @@
-## Additive Models with Interactions under Strong Hierarchy
+## ELAAN-H: Additive Models with Interactions under Strong Hierarchy
 
 This folder contains the source files for running the additive model with interactions under strong hierarchy
 
