@@ -32,7 +32,7 @@ Alternatively, the following packages can be downloaded to run the python script
 * tqdm                      4.54.1
  
 ## Proposed Models
-* `ELAAN`: Additive Models under L0
+* `ELAAN`: Additive Models with main effects only under L0
 * `ELAAN-I`: Additive Models with Interactions under L0
 * `ELAAN-H`: Additive Models with Interactions with Strong Hierarchy
 
