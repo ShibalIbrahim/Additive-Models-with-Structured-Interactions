@@ -1,8 +1,8 @@
 # Additive-Models-with-Structured-Interactions
 
-This is our implementation of Additive Models with interactions under L0 subset selection with/without strong hierarchy as described in our manuscript.
+This is our implementation of End-to-End Learning Approach for Additive Models with interactions under sparsity as described in our manuscript.
 
-[Predicting Census Survey Response Rates via Interpretable Nonparametric Additive Models with Structured Interactions](http://arxiv.org/abs/2108.11328) by Shibal Ibrahim, Rahul Mazumder, Peter Radchenko, Emanuel Ben-David
+[Predicting Census Survey Response Rates With Parsimonious Additive Models and Structured Interactions](http://arxiv.org/abs/2108.11328) by Shibal Ibrahim, Rahul Mazumder, Peter Radchenko, Emanuel Ben-David
 
 ## Installation
 We provide a conda environment file named "sparse-am-with-interactions.yml" for straightforward installation with Anaconda, which can be used to setup a sparse-am-with-interactions environment with the commands:
@@ -41,10 +41,10 @@ Alternatively, the following packages can be downloaded to run the python script
 ```bash
 cd SparseGAMsWithInteractions
 
-The following 3 ipython notebooks can be used to run block cyclic coordinate descent algorithm for the three models
-For `AM`: run src/AMsL0/AMsL0.ipynb [no interactions]
-For `AMI`: run src/AMsWithInteractionsL0/AMsWithInteractionsL0.ipynb
-For `AMISH`: run src/AMsWithInteractionsStrongHierarchy/AMsWithInteractionsStrongHierarchy.ipynb
+The following 3 ipython notebooks can be used to run the following three models:
+For `AM`: run src/AMsL0/AMsL0.ipynb [no interactions, ELAAN in the paper]
+For `AMI`: run src/AMsWithInteractionsL0/AMsWithInteractionsL0.ipynb [with interactions, ELAAN-I in the paper]
+For `AMISH`: run src/AMsWithInteractionsStrongHierarchy/AMsWithInteractionsStrongHierarchy.ipynb [with hierarchical interactions, ELAAN-H in the paper]
 ```
 
 ## Citing Additive-Models-with-Structured-Interactions
@@ -52,9 +52,9 @@ If you find our repository useful in your research, please consider citing the f
 
 ```
 @misc{Ibrahim2021,
-  title={Interpretable-Models-To-Identify-Low-Response-Populations-In-Census-Bureau-Surveys},
+  title={Predicting Census Survey Response Rates With Parsimonious Additive Models and Structured Interactions},
   author={Ibrahim, Shibal and Mazumder, Rahul and Radchenki, Peter and Ben-David, Emanuel},
-  Eprint={arXiv:},
+  Eprint={arXiv:2108.11328},
   year={2021}
 }
 ```
