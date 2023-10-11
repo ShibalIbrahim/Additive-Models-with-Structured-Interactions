@@ -109,97 +109,97 @@ if args.dataset == 'synthetic':
     lams_L0_start = -1
     lams_L0_stop = -5
     
-elif args.dataset == 'large-synthetic':
-    p = 500
-    k = 10
-    sigma = np.zeros((p,p))
-    for i in range(p):
-        for j in range(p):
-            sigma[i,j] = (args.correlation)**(abs(i-j))
+# elif args.dataset == 'large-synthetic':
+#     p = 500
+#     k = 10
+#     sigma = np.zeros((p,p))
+#     for i in range(p):
+#         for j in range(p):
+#             sigma[i,j] = (args.correlation)**(abs(i-j))
 
-    np.random.seed(args.seed)
+#     np.random.seed(args.seed)
     
-    Xtrain = np.random.multivariate_normal(np.zeros(p), sigma, (int)(args.train_size))
-    Xval = np.random.multivariate_normal(np.zeros(p), sigma, (int)(0.1*args.train_size))
-    Xtest = np.random.multivariate_normal(np.zeros(p), sigma, args.test_size)
-    feature_support_truth = np.zeros(p)
-    true_support = np.arange((int)(p/(2*k)),p,(int)(p/k))
-    print("True Support: ", true_support)
-    feature_support_truth[true_support] = 1
+#     Xtrain = np.random.multivariate_normal(np.zeros(p), sigma, (int)(args.train_size))
+#     Xval = np.random.multivariate_normal(np.zeros(p), sigma, (int)(0.1*args.train_size))
+#     Xtest = np.random.multivariate_normal(np.zeros(p), sigma, args.test_size)
+#     feature_support_truth = np.zeros(p)
+#     true_support = np.arange((int)(p/(2*k)),p,(int)(p/k))
+#     print("True Support: ", true_support)
+#     feature_support_truth[true_support] = 1
 
-    def g0(t):
-        return 0.5*t
+#     def g0(t):
+#         return 0.5*t
     
-    def g1(t):
-        return 1.25*np.sin(t)
+#     def g1(t):
+#         return 1.25*np.sin(t)
     
-    def g2(t):
-        return 0.3*np.exp(t)
+#     def g2(t):
+#         return 0.3*np.exp(t)
 
-    def g3(t):
-        return 0.5*(t**2)
+#     def g3(t):
+#         return 0.5*(t**2)
 
-    def g4(t):
-        return 0.9*np.cos(t)
+#     def g4(t):
+#         return 0.9*np.cos(t)
 
-    def g5(t):
-        return 1/(1+np.exp(-t)) # not sure about variance
+#     def g5(t):
+#         return 1/(1+np.exp(-t)) # not sure about variance
 
     
     
-    def get_f(x):
-        f = g0(x[:,true_support[0]]) + \
-        g1(x[:,true_support[1]]) + \
-        g2(x[:,true_support[2]]) + \
-        g3(x[:,true_support[3]]) + \
-        g4(x[:,true_support[4]]) + \
-        g5(x[:,true_support[5]]) + \
-        g0(x[:,true_support[6]]) + \
-        g1(x[:,true_support[7]]) + \
-        g2(x[:,true_support[8]]) + \
-        g3(x[:,true_support[9]]) + \
-        g0(x[:,true_support[0]])*g1(x[:,true_support[1]]) +\
-        g0(x[:,true_support[0]])*g2(x[:,true_support[2]]) +\
-        g3(0.5*(x[:,true_support[2]]+x[:,true_support[3]])) +\
-        g4(x[:,true_support[6]]*x[:,true_support[7]]) +\
-        g5(x[:,true_support[8]]*x[:,true_support[9]]) 
-        return f
-    ftrain = get_f(Xtrain)
-    fval = get_f(Xval)
-    ftest = get_f(Xtest)
+#     def get_f(x):
+#         f = g0(x[:,true_support[0]]) + \
+#         g1(x[:,true_support[1]]) + \
+#         g2(x[:,true_support[2]]) + \
+#         g3(x[:,true_support[3]]) + \
+#         g4(x[:,true_support[4]]) + \
+#         g5(x[:,true_support[5]]) + \
+#         g0(x[:,true_support[6]]) + \
+#         g1(x[:,true_support[7]]) + \
+#         g2(x[:,true_support[8]]) + \
+#         g3(x[:,true_support[9]]) + \
+#         g0(x[:,true_support[0]])*g1(x[:,true_support[1]]) +\
+#         g0(x[:,true_support[0]])*g2(x[:,true_support[2]]) +\
+#         g3(0.5*(x[:,true_support[2]]+x[:,true_support[3]])) +\
+#         g4(x[:,true_support[6]]*x[:,true_support[7]]) +\
+#         g5(x[:,true_support[8]]*x[:,true_support[9]]) 
+#         return f
+#     ftrain = get_f(Xtrain)
+#     fval = get_f(Xval)
+#     ftest = get_f(Xtest)
 
-    errortrain = np.random.normal(loc=0, scale=0.25, size=ftrain.shape)
-    errorval = np.random.normal(loc=0, scale=0.25, size=fval.shape)
-    errortest = np.random.normal(loc=0, scale=0.25, size=ftest.shape)
+#     errortrain = np.random.normal(loc=0, scale=0.25, size=ftrain.shape)
+#     errorval = np.random.normal(loc=0, scale=0.25, size=fval.shape)
+#     errortest = np.random.normal(loc=0, scale=0.25, size=ftest.shape)
 
-    ytrain = ftrain+errortrain
-    yval = fval+errorval
-    ytest = ftest+errortest
-    ytrain = ytrain.reshape(-1,1)
-    yval = yval.reshape(-1,1)
-    ytest = ytest.reshape(-1,1)   
-    num_of_folds = 1
-    main_support_true = np.zeros(p)
-    main_support_true[true_support] = 1
-    interaction_terms_all = []
-    for m in range(0, p):
-        for n in range(0, p):
-            if m!=n and m<n:
-                interaction_terms_all.append((m, n))
-    interaction_terms_all = np.array(interaction_terms_all)
-    interaction_support_true = np.zeros((len(interaction_terms_all)))
-    for term in np.array(
-        [
-            [true_support[0],true_support[1]] , [true_support[0],true_support[2]] , [true_support[2],true_support[3]],
-            [true_support[6],true_support[7]] , [true_support[8],true_support[9]]
-        ]
-    ):
-        interaction_support_true[(term.reshape(1,-1)==interaction_terms_all).all(axis=1)] = 1
-    lams_sm_start = -3
-    lams_sm_stop = -7
-    lams_L0_start = 0
-    lams_L0_stop = -6
-    max_interaction_support=50 # cuts off the L0 regularization path when the number of interactions reach 50.
+#     ytrain = ftrain+errortrain
+#     yval = fval+errorval
+#     ytest = ftest+errortest
+#     ytrain = ytrain.reshape(-1,1)
+#     yval = yval.reshape(-1,1)
+#     ytest = ytest.reshape(-1,1)   
+#     num_of_folds = 1
+#     main_support_true = np.zeros(p)
+#     main_support_true[true_support] = 1
+#     interaction_terms_all = []
+#     for m in range(0, p):
+#         for n in range(0, p):
+#             if m!=n and m<n:
+#                 interaction_terms_all.append((m, n))
+#     interaction_terms_all = np.array(interaction_terms_all)
+#     interaction_support_true = np.zeros((len(interaction_terms_all)))
+#     for term in np.array(
+#         [
+#             [true_support[0],true_support[1]] , [true_support[0],true_support[2]] , [true_support[2],true_support[3]],
+#             [true_support[6],true_support[7]] , [true_support[8],true_support[9]]
+#         ]
+#     ):
+#         interaction_support_true[(term.reshape(1,-1)==interaction_terms_all).all(axis=1)] = 1
+#     lams_sm_start = -3
+#     lams_sm_stop = -7
+#     lams_L0_start = 0
+#     lams_L0_stop = -6
+#     max_interaction_support=50 # cuts off the L0 regularization path when the number of interactions reach 50.
     
 elif args.dataset == 'large-synthetic-correlated':
     p = 500
@@ -297,97 +297,97 @@ elif args.dataset == 'large-synthetic-correlated':
     lams_L0_stop = -4
     max_interaction_support=50 # cuts off the L0 regularization path when the number of interactions reach 50.
 
-elif args.dataset == 'large-synthetic-correlated-aoas':
-    p = 500
-    k = 50
-    sigma = np.zeros((p,p))
-    for i in range(p):
-        for j in range(p):
-            sigma[i,j] = (args.correlation)**(abs(i-j))
+# elif args.dataset == 'large-synthetic-correlated-aoas':
+#     p = 500
+#     k = 50
+#     sigma = np.zeros((p,p))
+#     for i in range(p):
+#         for j in range(p):
+#             sigma[i,j] = (args.correlation)**(abs(i-j))
 
-    np.random.seed(args.seed)
+#     np.random.seed(args.seed)
     
-    Xtrain = np.random.multivariate_normal(np.zeros(p), sigma, (int)(args.train_size))
-    Xval = np.random.multivariate_normal(np.zeros(p), sigma, (int)(0.1*args.train_size))
-    Xtest = np.random.multivariate_normal(np.zeros(p), sigma, args.test_size)
-    feature_support_truth = np.zeros(p)
+#     Xtrain = np.random.multivariate_normal(np.zeros(p), sigma, (int)(args.train_size))
+#     Xval = np.random.multivariate_normal(np.zeros(p), sigma, (int)(0.1*args.train_size))
+#     Xtest = np.random.multivariate_normal(np.zeros(p), sigma, args.test_size)
+#     feature_support_truth = np.zeros(p)
 
-    errortrain = np.random.normal(loc=0, scale=0.25, size=((int)(args.train_size),))
-    errorval = np.random.normal(loc=0, scale=0.25, size=((int)(0.1*args.train_size),))
-    errortest = np.random.normal(loc=0, scale=0.25, size=(args.test_size,))
+#     errortrain = np.random.normal(loc=0, scale=0.25, size=((int)(args.train_size),))
+#     errorval = np.random.normal(loc=0, scale=0.25, size=((int)(0.1*args.train_size),))
+#     errortest = np.random.normal(loc=0, scale=0.25, size=(args.test_size,))
     
-    increment = (int)(p/k)
-    start = (int)(p/(2*k))
-    true_support = np.arange(start,p,increment)
-    print("True Support: ", true_support)
-    feature_support_truth[true_support] = 1
+#     increment = (int)(p/k)
+#     start = (int)(p/(2*k))
+#     true_support = np.arange(start,p,increment)
+#     print("True Support: ", true_support)
+#     feature_support_truth[true_support] = 1
 
-    def g0(t):
-        return 0.5*t
+#     def g0(t):
+#         return 0.5*t
     
-    def g1(t):
-        return 1.25*np.sin(t)
+#     def g1(t):
+#         return 1.25*np.sin(t)
     
-    def g2(t):
-        return 0.3*np.exp(t)
+#     def g2(t):
+#         return 0.3*np.exp(t)
 
-    def g3(t):
-        return 0.5*(t**2)
+#     def g3(t):
+#         return 0.5*(t**2)
 
-    def g4(t):
-        return 0.9*np.cos(t)
+#     def g4(t):
+#         return 0.9*np.cos(t)
     
-    bases = [g0, g1, g2, g3, g4]
-    possible_candidates = np.array(list(combinations(true_support, 2)))
-    np.random.seed(42) # force same true interactions
-    num_true_interactions = 50
-    true_interactions = possible_candidates[np.random.choice(len(possible_candidates), num_true_interactions, replace=False)]
+#     bases = [g0, g1, g2, g3, g4]
+#     possible_candidates = np.array(list(combinations(true_support, 2)))
+#     np.random.seed(42) # force same true interactions
+#     num_true_interactions = 50
+#     true_interactions = possible_candidates[np.random.choice(len(possible_candidates), num_true_interactions, replace=False)]
 
-    def get_f(x):
-        f = np.zeros((x.shape[0],), dtype=x.dtype)
+#     def get_f(x):
+#         f = np.zeros((x.shape[0],), dtype=x.dtype)
 
-        # main effects
-        corresponding_bases = {}
-        for i, index in enumerate(true_support):
-            f += bases[i%5](x[:,index])
-            print(i%5, index)
-            corresponding_bases[index] = bases[i%5]
+#         # main effects
+#         corresponding_bases = {}
+#         for i, index in enumerate(true_support):
+#             f += bases[i%5](x[:,index])
+#             print(i%5, index)
+#             corresponding_bases[index] = bases[i%5]
 
-        # interaction effects
-        for term in true_interactions:
-            f += corresponding_bases[term[0]](x[:,term[0]])*corresponding_bases[term[1]](x[:,term[1]])
-            print(term, (corresponding_bases[term[0]], corresponding_bases[term[1]]))
+#         # interaction effects
+#         for term in true_interactions:
+#             f += corresponding_bases[term[0]](x[:,term[0]])*corresponding_bases[term[1]](x[:,term[1]])
+#             print(term, (corresponding_bases[term[0]], corresponding_bases[term[1]]))
 
-        return f
+#         return f
         
-    ftrain = get_f(Xtrain)
-    fval = get_f(Xval)
-    ftest = get_f(Xtest)
+#     ftrain = get_f(Xtrain)
+#     fval = get_f(Xval)
+#     ftest = get_f(Xtest)
 
 
-    ytrain = ftrain+errortrain
-    yval = fval+errorval
-    ytest = ftest+errortest
-    ytrain = ytrain.reshape(-1,1)
-    yval = yval.reshape(-1,1)
-    ytest = ytest.reshape(-1,1)   
-    num_of_folds = 1
-    main_support_true = np.zeros(p)
-    main_support_true[true_support] = 1
-    interaction_terms_all = []
-    for m in range(0, p):
-        for n in range(0, p):
-            if m!=n and m<n:
-                interaction_terms_all.append((m, n))
-    interaction_terms_all = np.array(interaction_terms_all)
-    interaction_support_true = np.zeros((len(interaction_terms_all)))
-    for term in true_interactions:
-        interaction_support_true[(term.reshape(1,-1)==interaction_terms_all).all(axis=1)] = 1
-    lams_sm_start = -3
-    lams_sm_stop = -7
-    lams_L0_start = 1
-    lams_L0_stop = -5
-    max_interaction_support=200 # cuts off the L0 regularization path when the number of interactions reach 100.
+#     ytrain = ftrain+errortrain
+#     yval = fval+errorval
+#     ytest = ftest+errortest
+#     ytrain = ytrain.reshape(-1,1)
+#     yval = yval.reshape(-1,1)
+#     ytest = ytest.reshape(-1,1)   
+#     num_of_folds = 1
+#     main_support_true = np.zeros(p)
+#     main_support_true[true_support] = 1
+#     interaction_terms_all = []
+#     for m in range(0, p):
+#         for n in range(0, p):
+#             if m!=n and m<n:
+#                 interaction_terms_all.append((m, n))
+#     interaction_terms_all = np.array(interaction_terms_all)
+#     interaction_support_true = np.zeros((len(interaction_terms_all)))
+#     for term in true_interactions:
+#         interaction_support_true[(term.reshape(1,-1)==interaction_terms_all).all(axis=1)] = 1
+#     lams_sm_start = -3
+#     lams_sm_stop = -7
+#     lams_L0_start = 1
+#     lams_L0_stop = -5
+#     max_interaction_support=200 # cuts off the L0 regularization path when the number of interactions reach 100.
     
                 
 def identity_func(x):
