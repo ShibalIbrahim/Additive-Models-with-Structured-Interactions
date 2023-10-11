@@ -42,9 +42,9 @@ Alternatively, the following packages can be downloaded to run the python script
 cd SparseGAMsWithInteractions
 
 The following 3 ipython notebooks can be used to run the following three models:
-For `AM`: run src/AMsL0/AMsL0.ipynb [no interactions, ELAAN in the paper]
-For `AMI`: run src/AMsWithInteractionsL0/AMsWithInteractionsL0.ipynb [with interactions, ELAAN-I in the paper]
-For `AMISH`: run src/AMsWithInteractionsStrongHierarchy/AMsWithInteractionsStrongHierarchy.ipynb [with hierarchical interactions, ELAAN-H in the paper]
+For ELAAN: run src/AMsL0/AMsL0.ipynb
+For ELAAN-I: run src/AMsWithInteractionsL0/AMsWithInteractionsL0.ipynb
+For ELAAN-H: run src/AMsWithInteractionsStrongHierarchy/AMsWithInteractionsStrongHierarchy.ipynb
 ```
 
 ## Citing Additive-Models-with-Structured-Interactions
