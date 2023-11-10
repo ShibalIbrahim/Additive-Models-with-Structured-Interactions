@@ -51,11 +51,12 @@ For ELAAN-H: run src/AMsWithInteractionsStrongHierarchy/AMsWithInteractionsStron
 If you find our repository useful in your research, please consider citing the following paper.
 
 ```
-@misc{Ibrahim2021,
-  title={Predicting Census Survey Response Rates With Parsimonious Additive Models and Structured Interactions},
-  author={Ibrahim, Shibal and Mazumder, Rahul and Radchenki, Peter and Ben-David, Emanuel},
-  Eprint={arXiv:2108.11328},
-  year={2021}
+@article{Ibrahim2021,
+      title={Predicting Census Survey Response Rates With Parsimonious Additive Models and Structured Interactions}, 
+      author={Shibal Ibrahim and Rahul Mazumder and Peter Radchenko and Emanuel Ben-David},
+      year={2021},
+      volume={abs/2108.11328},
+      journal={arXiv},
 }
 ```
 
