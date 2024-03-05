@@ -30,7 +30,11 @@ Alternatively, the following packages can be downloaded to run the python script
 * scikit-learn              0.23.2
 * scipy                     1.5.3
 * tqdm                      4.54.1
- 
+
+## Census Data
+The Census data can be downloaded from dropbox: https://www.dropbox.com/sh/piwdz9sbmxjx03f/AACAKqjunrEhaRY9SORRE-Yba?dl=0
+Download Census Planning Database 2019 Tract Level Data and tract-level shape files from the link.
+
 ## Proposed Models
 * `ELAAN`: Additive Models with main effects only under L0
 * `ELAAN-I`: Additive Models with Interactions under L0
